@@ -278,11 +278,7 @@ export default function HomeScreen() {
           <Text style={styles.languageIndicator}>{t.languageIndicator}: {currentLanguage}</Text>
         </View>
 
-        {/* Emergency Button */}
-        <TouchableOpacity style={styles.emergencyButton} onPress={handleEmergencyCall}>
-          <Phone size={24} color="#ffffff" />
-          <Text style={styles.emergencyText}>{t.emergencyService}</Text>
-        </TouchableOpacity>
+        
 
         {/* Quick Actions */}
         <View style={styles.section}>
@@ -386,6 +382,11 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        {/* Emergency Button */}
+        <TouchableOpacity style={styles.emergencyButton} onPress={handleEmergencyCall}>
+          <Phone size={24} color="#ffffff" />
+          <Text style={styles.emergencyText}>{t.emergencyService}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
