@@ -1,3 +1,5 @@
+import NetInfo from '@react-native-community/netinfo';
+
 export interface OfflineStatus {
   isOnline: boolean;
   pendingSync: number;
@@ -21,23 +23,26 @@ class OfflineDataService {
   }
 
   private initializeNetworkListener() {
-    // Simulate network status checking
-    // In a real app, you'd use NetInfo or similar
-    this.isOnline = navigator?.onLine ?? true;
+    // Use NetInfo for React Native
+    NetInfo.fetch().then(state => {
+      this.isOnline = state.isConnected ?? true;
+      this.notifyListeners();
+    });
 
-    // Listen for network changes (web only)
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => {
-        this.isOnline = true;
+    // Listen for network changes
+    const unsubscribe = NetInfo.addEventListener(state => {
+      const wasOnline = this.isOnline;
+      this.isOnline = state.isConnected ?? true;
+      
+      if (!wasOnline && this.isOnline) {
         this.syncPendingData();
-        this.notifyListeners();
-      });
+      }
+      
+      this.notifyListeners();
+    });
 
-      window.addEventListener('offline', () => {
-        this.isOnline = false;
-        this.notifyListeners();
-      });
-    }
+    // Store unsubscribe function for cleanup if needed
+    (this as any).unsubscribeNetInfo = unsubscribe;
   }
 
   private notifyListeners() {
